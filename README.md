@@ -1,19 +1,35 @@
 # xgift - Python библиотека для работы с xGift API
 
-Простая и удобная библиотека для получения информации о NFT-гифтах на платформе xGift.
+Простая и удобная библиотека для получения информации о NFT-гифтах с платформы xGift.
 
-PyPI: https://pypi.org/project/xgift/
+**PyPI:** https://pypi.org/project/xgift/  
 
-GitHub: https://github.com/aiofake/xgift
+**GitHub:** https://github.com/aiofake/xgift
+
 ## Установка
 
 ```bash
 pip install xgift
 ```
 
-## Быстрое начало
+## Быстрый старт
 
-### Простой пример
+### Пример 1: Получить цену гифта
+
+```python
+import asyncio
+from xgift import Gift
+
+async def main():
+    client = Gift()
+    price = await client.floorPrice("PlushPepe")
+    print(f"PlushPepe floor price: {price} TON")
+    await client.close()
+
+asyncio.run(main())
+```
+
+### Пример 2: Получить информацию о нескольких гифтах
 
 ```python
 import asyncio
@@ -22,71 +38,91 @@ from xgift import Gift
 async def main():
     client = Gift()
     
-    # Получаем цену гифта
-    price = await client.floorPrice("PlushPepe")
-    print(f"floor PlushPepe: {price} TON")
+    gifts = ["PlushPepe", "AstralShard", "Bitcoin"]
+    prices = await client.floorPrice(gifts)
+    
+    for gift, price in zip(gifts, prices):
+        print(f"{gift}: {price} TON")
     
     await client.close()
 
 asyncio.run(main())
 ```
 
-### Класс Gift - основной клиент
+## Основные методы
+
+### Класс Gift
 
 ```python
-# Создание клиента
-client = Gift()
+import asyncio
+from xgift import Gift
 
-# Получение floor price
-price = await client.floorPrice("PlushPepe")  # Один гифт
-prices = await client.floorPrice(["PlushPepe", "AstralShard"])  # Несколько гифтов
+async def main():
+    client = Gift()
+    
+    # Получить floor price
+    price = await client.floorPrice("PlushPepe")
+    
+    # Получить оценочную цену
+    estimated_ton = await client.estimatedPrice("PlushPepe-1", asset="Ton")
+    estimated_usd = await client.estimatedPrice("PlushPepe-1", asset="Usd")
+    
+    # Получить элементы коллекции
+    models = await client.models_floor("PlushPepe")
+    backdrops = await client.backdrops_floor("PlushPepe")
+    symbols = await client.symbols_floor("PlushPepe")
+    
+    # График цены
+    graph = await client.getFloorGraph("PlushPepe")
+    
+    # Проверка монохромности
+    is_mono = await client.isMonochrome("PlushPepe-1")
+    
+    print(f"Price: {price}")
+    await client.close()
 
-# Оценочная цена
-estimated_ton = await client.estimatedPrice("PlushPepe-1", asset="Ton")
-estimated_usd = await client.estimatedPrice("PlushPepe-1", asset="Usd")
-
-# Получение floor элементов коллекции
-models = await client.models_floor("PlushPepe")  # модели
-backdrops = await client.backdrops_floor("PlushPepe")  # фоны
-symbols = await client.symbols_floor("PlushPepe")  # символы
-
-# floor + график
-graph_data = await client.getFloorGraph("PlushPepe")
-
-# Проверка на монохром
-is_monochrome = await client.isMonochrome("PlushPepe-1")
-
-# Закрытие соединения
-await client.close()
+asyncio.run(main())
 ```
 
-### Класс GiftRaw - низкоуровневый доступ
+### Класс GiftRaw (низкоуровневый API)
 
 ```python
+import asyncio
 from xgift import GiftRaw
 
-raw = GiftRaw()
+async def main():
+    raw = GiftRaw()
+    
+    # Прямые запросы к API
+    gift_info = await raw.GiftInfo("PlushPepe-1")
+    collection_info = await raw.CollectionInfo("PlushPepe")
+    gifts_in_collection = await raw.CollectionGifts("PlushPepe")
+    
+    print(gift_info)
+    await raw.close()
 
-# Прямые запросы к API
-gift_info = await raw.GiftInfo("PlushPepe-1")
-collection_info = await raw.CollectionInfo("PlushPepe")
-gifts_in_collection = await raw.CollectionGifts("PlushPepe")
-
-await raw.close()
+asyncio.run(main())
 ```
 
 ### Утилиты
 
 ```python
+import asyncio
 from xgift import tonRate, nfts, lottie
 
-# Курс TON
-ton_rate = await tonRate()
+async def main():
+    # Курс TON
+    rate = await tonRate()
+    print(f"TON rate: {rate}")
+    
+    # NFT
+    names = await nfts("names")  # names-to-ids
+    ids = await nfts("ids")      # ids-to-names
+    print(names)
+    
+    # Lottie анимация
+    animation = await lottie("plushpepe-1")
+    print(animation)
 
-# Список NFT
-nft_names = await nfts("names")  # names-to-ids
-nft_ids = await nfts("ids") # ids-to-names
-
-# Lottie-анимация гифта
-animation = await lottie("plushpepe-1")
+asyncio.run(main())
 ```
