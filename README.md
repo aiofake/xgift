@@ -51,7 +51,7 @@ backdrops = await client.backdrops_floor("PlushPepe")  # фоны
 symbols = await client.symbols_floor("PlushPepe")  # символы
 
 # floor + график
-graph_data = await client.getFloorGraph("PlushPepe-1")
+graph_data = await client.getFloorGraph("PlushPepe")
 
 # Проверка на монохром
 is_monochrome = await client.isMonochrome("PlushPepe-1")
