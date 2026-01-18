@@ -38,7 +38,7 @@ from xgift import Gift
 async def main():
     client = Gift()
     
-    gifts = ["PlushPepe", "AstralShard", "Bitcoin"]
+    gifts = ["PlushPepe", "AstralShard"]
     prices = await client.floorPrice(gifts)
     
     for gift, price in zip(gifts, prices):
@@ -116,8 +116,9 @@ async def main():
     print(f"TON rate: {rate}")
     
     # NFT
-    names = await nfts("names")  # names-to-ids
-    ids = await nfts("ids")      # ids-to-names
+    names = await nfts("names")  # только names
+    ids = await nfts("ids")      # только ids
+    all_nfts = await nfts("all") # names + ids (по умолчанию)
     print(names)
     
     # Lottie анимация
