@@ -1,17 +1,17 @@
 from .raw import GiftRaw
 from typing import *
-import asyncio, httpx, logging
+import asyncio, logging
 
 logger = logging.getLogger(__name__)
 
 class Gift:
-    def __init__(self):
-        self.client = httpx.AsyncClient(http2=True)  
+    def __init__(self, proxy: Optional[str] = None, batch_size: int = 1, delay: float = 0, impersonate: str = "safari_ios"):
+        self.api = GiftRaw(proxy=proxy, batch_size=batch_size, delay=delay, impersonate=impersonate)
+
 
     async def floorPrice(self, name: Union[str, List[str]]):
         try:
-            api = GiftRaw()
-            data = await api.CollectionInfo(name)
+            data = await self.api.CollectionInfo(name)
             
             if isinstance(name, list):
                 results = []
@@ -30,10 +30,30 @@ class Gift:
             return [] if isinstance(name, list) else False
         
 
+    async def simpleEstimation(self, slug: Union[str, List[str]]):
+        try:
+            data = await self.api.GiftInfo(slug)
+            
+            if isinstance(slug, list):
+                results = []
+                for item in data:
+                    if isinstance(item, dict):
+                        results.append(item.get("priceAnalysisData", False).get("simpleEstimation").get("price"))
+                    else:
+                        results.append(False)
+                return results
+            else:
+                if isinstance(data, dict):
+                    return data.get("priceAnalysisData", False).get("simpleEstimation").get("price")
+                return False
+        except Exception as e:
+            logger.error(f"[Gift]: Error in method estimatedPrice(). Error: {e}")
+            return [] if isinstance(slug, list) else False
+        
+
     async def estimatedPrice(self, slug: Union[str, List[str]], asset: Literal["Ton", "Usd"]="Ton"):
         try:
-            api = GiftRaw()
-            data = await api.GiftInfo(slug)
+            data = await self.api.GiftInfo(slug)
             
             if isinstance(slug, list):
                 results = []
@@ -116,9 +136,8 @@ class Gift:
         try:
             formatted = name.replace(" ", "").replace("'", "").replace("-", "")
             url = f"https://app-api.xgift.tg/gifts/filters/{formatted}"
-            
-            api = GiftRaw()
-            response = await api._make_request(url=url, params={"collectionType": "upgradable"})
+
+            response = await self.api._make_request(url=url, params={"collectionType": "upgradable"})
             
             if response is None:
                 return {}
@@ -146,8 +165,7 @@ class Gift:
 
     async def getFloorGraph(self, slug: Union[str, List[str]]):
         try:
-            api = GiftRaw()
-            data = await api.CollectionInfo(slug)
+            data = await self.api.CollectionInfo(slug)
             
             if isinstance(slug, list):
                 results = []
@@ -168,8 +186,7 @@ class Gift:
 
     async def isMonochrome(self, slug: Union[str, List[str]]):
         try:
-            api = GiftRaw()
-            data = await api.GiftInfo(slug)
+            data = await self.api.GiftInfo(slug)
             
             if isinstance(slug, list):
                 results = []
@@ -187,8 +204,9 @@ class Gift:
             logger.error(f"[Gift]: Error in method isMonochrome(). Error: {e}")
             return [] if isinstance(slug, list) else False
     
+
     async def close(self):
         try:
-            await self.client.aclose()
+            await self.api.close()
         except Exception as e:
             logger.error(f"[Gift]: Error in method close(). Error: {e}")
