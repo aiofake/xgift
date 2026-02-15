@@ -118,9 +118,9 @@ client = Gift(
 
 *   **`async models_floor(name: Union[str, List[str]])`**
     *   Возвращает словарь, где ключи — это названия **моделей (модификаторов)** гифта из коллекции `name`, а значения — их минимальные цены (`floorPriceTon`).
-    *   **Пример:** `await client.models_floor("PlushPepe")` вернет `{'Polka Dots': 12.5, 'Aqua Plush': 15.0, ...}`
+    *   **Пример:** `await client.models_floor("PlushPepe")` вернет `{'Amalgam': 9999.0, 'Aqua Plush': 9999.0, 'Barcelona': 10500.0, ...}`
 
-*   **`async backdrops_floor(name: Union[str, List[str]])`** (Аналогично `models_floor`, но для задних планов)
+*   **`async backdrops_floor(name: Union[str, List[str]])`** (Аналогично `models_floor`, но для фонов)
 *   **`async symbols_floor(name: Union[str, List[str]])`** (Аналогично `models_floor`, но для символов)
 
 *   **`async getFloorGraph(slug: Union[str, List[str]])`**
