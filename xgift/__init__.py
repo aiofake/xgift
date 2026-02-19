@@ -7,7 +7,9 @@ from .gift import (
 from .utils import (
     tonRate,
     nfts,
-    lottie
+    lottie,
+    emoji,
+    graph
 )
 
 __all__ = [
@@ -15,5 +17,7 @@ __all__ = [
     "Gift",
     "tonRate",
     "nfts",
-    "lottie"
+    "lottie",
+    "emoji",
+    "graph"
 ]

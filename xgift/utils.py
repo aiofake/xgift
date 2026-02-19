@@ -1,6 +1,7 @@
 from .raw import GiftRaw
 from typing import *
-import logging
+import logging, json, time
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -41,3 +42,21 @@ async def lottie(slug: str):
     except Exception as e:
         logger.error(f"[utils]: Error in method lottie(). Error: {e}")
         return None
+    
+async def emoji(collection_id="all"):
+    current_dir = Path(__file__).parent
+    json_file = current_dir / "gift_data.json"
+    
+    with open(json_file, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    if collection_id == "all":
+        return data
+    elif collection_id in data:
+        result = data[collection_id]
+        return result
+    else:
+        print("[utils]: Try different id")
+
+async def graph(collection_id):
+    return f"https://static-gift.xgift.tg/gifts/graphs/{collection_id}.png?timestamp={int(time.time() * 1000)}"

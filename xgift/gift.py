@@ -47,7 +47,7 @@ class Gift:
                     return data.get("priceAnalysisData", False).get("simpleEstimation").get("price")
                 return False
         except Exception as e:
-            logger.error(f"[Gift]: Error in method estimatedPrice(). Error: {e}")
+            logger.error(f"[Gift]: Error in method simpleEstimation(). Error: {e}")
             return [] if isinstance(slug, list) else False
         
 
@@ -70,7 +70,7 @@ class Gift:
         except Exception as e:
             logger.error(f"[Gift]: Error in method estimatedPrice(). Error: {e}")
             return [] if isinstance(slug, list) else False
-    
+            
 
     async def models_floor(self, name: Union[str, List[str]]):
         try:
@@ -132,7 +132,7 @@ class Gift:
             return {} if isinstance(name, str) else {}
         
 
-    async def _one_item(self, name: str, type: Literal["Model", "Backdrop", "Symbol"]):
+    async def _one_item(self, name: str, type: Literal["Model", "Backdrop", "Symbol"], key=""):
         try:
             formatted = name.replace(" ", "").replace("'", "").replace("-", "")
             url = f"https://app-api.xgift.tg/gifts/filters/{formatted}"
@@ -161,7 +161,6 @@ class Gift:
         except Exception as e:
             logger.error(f"[Gift]: Error in method _one_item(). Error: {e}")
             return {}
-    
 
     async def getFloorGraph(self, slug: Union[str, List[str]]):
         try:
