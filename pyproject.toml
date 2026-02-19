@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "xgift"
+version = "0.3.8"
+authors = [
+  {name = "aiofake"},
+]
+description = "Python библиотека для работы с xGift API"
+readme = "README.md"
+license = {file = "LICENSE"}
+dependencies = [
+    "curl_cffi"
+]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/aiofake/xgift"
+"Bug Tracker" = "https://github.com/aiofake/xgift/issues"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+xgift = ["*.json"]
